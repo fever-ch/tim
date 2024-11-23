@@ -6,7 +6,7 @@ import (
 )
 
 func parseTim(t string) (time.Time, error) {
-	rx := regexp.MustCompile(`(.+)([+\-])([\sa-z0-9]+)$`)
+	rx := regexp.MustCompile(`^(.+)([+\-])([\sa-z0-9]+)$`)
 	groups := rx.FindStringSubmatch(t)
 	if groups != nil {
 		d, e := parseDuration(groups[3])
