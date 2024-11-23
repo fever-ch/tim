@@ -60,3 +60,23 @@ func TestGMT2(t *testing.T) {
 	assert.Nil(t, e)
 	assert.Equal(t, int64(681490580000), ts.UnixMilli())
 }
+
+func TestNewYork(t *testing.T) {
+	ts, e := parseTime("1991-08-06T10:56:20@America/New_York")
+
+	assert.Nil(t, e)
+	assert.Equal(t, int64(681490580000), ts.UnixMilli())
+}
+
+func TestZurich(t *testing.T) {
+	ts, e := parseTime("1991-08-06T16:56:20@Europe/Zurich")
+
+	assert.Nil(t, e)
+	assert.Equal(t, int64(681490580000), ts.UnixMilli())
+}
+
+func TestNonExisting(t *testing.T) {
+	_, e := parseTime("1991-08-06T16:56:20@Does_Not/Exist")
+
+	assert.NotNil(t, e)
+}
