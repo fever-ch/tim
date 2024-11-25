@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -59,14 +58,4 @@ func TestBadDelay(t *testing.T) {
 	_, err := parseTim("1991-06-06T16:56:20+02:00+2x")
 
 	assert.NotNil(t, err)
-}
-
-func TestA(t *testing.T) {
-
-	l, err := time.LoadLocation("Europe/Zurich")
-	if err != nil {
-		fmt.Println("Error loading location:", err)
-		return
-	}
-	println(l)
 }
