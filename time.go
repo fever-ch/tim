@@ -14,7 +14,7 @@ func parseTime(t string) (time.Time, error) {
 
 	if t == "today" {
 		ts := time.Now()
-		
+
 		year, month, day := ts.Date()
 		startOfDay := time.Date(year, month, day, 0, 0, 0, 0, time.Local)
 
@@ -23,21 +23,21 @@ func parseTime(t string) (time.Time, error) {
 
 	layout := time.RFC3339
 
-	tt, e := time.Parse(layout, t)
+	tt, err := time.Parse(layout, t)
 
-	if e == nil {
-		return tt, e
+	if err == nil {
+		return tt, err
 	}
 
 	rx := regexp.MustCompile(`^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})@(\w+/\w+)$`)
 
-	m := rx.FindStringSubmatch(t)
-	if m != nil {
-		l, e := time.LoadLocation(m[2])
-		if e != nil {
-			return time.Time{}, e
+	groups := rx.FindStringSubmatch(t)
+	if groups != nil {
+		l, err := time.LoadLocation(groups[2])
+		if err != nil {
+			return time.Time{}, err
 		}
-		return time.ParseInLocation(RFC3339_NO_TZ, m[1], l)
+		return time.ParseInLocation(RFC3339_NO_TZ, groups[1], l)
 	}
 
 	return time.ParseInLocation(RFC3339_NO_TZ, t, time.Local)

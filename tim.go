@@ -9,13 +9,13 @@ func parseTim(t string) (time.Time, error) {
 	rx := regexp.MustCompile(`^(.+)([+\-])([\sa-z0-9]+)$`)
 	groups := rx.FindStringSubmatch(t)
 	if groups != nil {
-		d, e := parseDuration(groups[3])
-		if e != nil {
-			return time.Time{}, e
+		d, err := parseDuration(groups[3])
+		if err != nil {
+			return time.Time{}, err
 		}
-		ts, e := parseTime(groups[1])
-		if e != nil {
-			return ts, e
+		ts, err := parseTime(groups[1])
+		if err != nil {
+			return ts, err
 		}
 		if groups[2] == "+" {
 			return ts.Add(d), nil

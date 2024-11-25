@@ -7,9 +7,9 @@ import (
 )
 
 func TestNow(t *testing.T) {
-	ts, e := parseTime("now")
+	ts, err := parseTime("now")
 
-	assert.Nil(t, e)
+	assert.Nil(t, err)
 	assert.InDelta(t, time.Now().UnixMilli(), ts.UnixMilli(), 1000)
 }
 
@@ -21,9 +21,9 @@ func TestToday(t *testing.T) {
 		now = time.Now()
 	}
 
-	ts, e := parseTime("today")
+	ts, err := parseTime("today")
 
-	assert.Nil(t, e)
+	assert.Nil(t, err)
 
 	assert.Equal(t, now.Year(), ts.Year())
 	assert.Equal(t, now.Month(), ts.Month())
@@ -48,35 +48,35 @@ func TestNoTZ(t *testing.T) {
 }
 
 func TestGMT(t *testing.T) {
-	ts, e := parseTime("1991-08-06T14:56:20+00:00")
+	ts, err := parseTime("1991-08-06T14:56:20+00:00")
 
-	assert.Nil(t, e)
+	assert.Nil(t, err)
 	assert.Equal(t, int64(681490580000), ts.UnixMilli())
 }
 
 func TestGMT2(t *testing.T) {
-	ts, e := parseTime("1991-08-06T16:56:20+02:00")
+	ts, err := parseTime("1991-08-06T16:56:20+02:00")
 
-	assert.Nil(t, e)
+	assert.Nil(t, err)
 	assert.Equal(t, int64(681490580000), ts.UnixMilli())
 }
 
 func TestNewYork(t *testing.T) {
-	ts, e := parseTime("1991-08-06T10:56:20@America/New_York")
+	ts, err := parseTime("1991-08-06T10:56:20@America/New_York")
 
-	assert.Nil(t, e)
+	assert.Nil(t, err)
 	assert.Equal(t, int64(681490580000), ts.UnixMilli())
 }
 
 func TestZurich(t *testing.T) {
-	ts, e := parseTime("1991-08-06T16:56:20@Europe/Zurich")
+	ts, err := parseTime("1991-08-06T16:56:20@Europe/Zurich")
 
-	assert.Nil(t, e)
+	assert.Nil(t, err)
 	assert.Equal(t, int64(681490580000), ts.UnixMilli())
 }
 
 func TestNonExisting(t *testing.T) {
-	_, e := parseTime("1991-08-06T16:56:20@Does_Not/Exist")
+	_, err := parseTime("1991-08-06T16:56:20@Does_Not/Exist")
 
-	assert.NotNil(t, e)
+	assert.NotNil(t, err)
 }
