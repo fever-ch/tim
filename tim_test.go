@@ -59,3 +59,10 @@ func TestBadDelay(t *testing.T) {
 
 	assert.NotNil(t, err)
 }
+
+func TestWithLocation(t *testing.T) {
+	ts, err := parseTim("1991-08-06T12:56:20@Europe/Zurich+4h")
+
+	assert.Nil(t, err)
+	assert.Equal(t, int64(681490580000), ts.UnixMilli())
+}
