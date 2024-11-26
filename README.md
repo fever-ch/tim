@@ -1,4 +1,4 @@
-# TIM:
+# TIM
 
 _Small time input library for GoLang_
 

@@ -7,28 +7,54 @@ import (
 	"time"
 )
 
-func parseDuration(d string) (time.Duration, error) {
-	rx := regexp.MustCompile(`^(|.*\D)(\d+)\s*\*\s*(\d+)(\D.*|)$`)
-	groups := rx.FindStringSubmatch(d)
+type dayShift struct {
+	days   int
+	months int
+	years  int
+}
 
-	if groups != nil {
-		a, _ := strconv.ParseInt(groups[2], 10, 64)
-		b, _ := strconv.ParseInt(groups[3], 10, 64)
-		return parseDuration(fmt.Sprintf("%s%d%s", groups[1], a*b, groups[4]))
+func stripDays(s string) (string, dayShift) {
+	sign := 1
+	if len(s) > 0 && s[0] == '-' {
+		sign = -1
 	}
 
-	rx = regexp.MustCompile(`^(|.*\D)(\d+)\s*([dw])\s*(\D.*|)$`)
-	groups = rx.FindStringSubmatch(d)
+	rx := regexp.MustCompile(`^(|.*\D)(\d+)([dwMy])(.*)$`)
 
-	if groups != nil {
-		a, _ := strconv.ParseInt(groups[2], 10, 64)
+	d := dayShift{}
 
-		if groups[3] == "d" {
-			return parseDuration(fmt.Sprintf("%s%d%s%s", groups[1], a*24, "h", groups[4]))
-		} else if groups[3] == "w" {
-			return parseDuration(fmt.Sprintf("%s%d%s%s", groups[1], a*24*7, "h", groups[4]))
+	for {
+		groups := rx.FindStringSubmatch(s)
+		if groups == nil {
+			break
+		} else {
+			n := 1
+			if len(groups[2]) > 0 {
+				n, _ = strconv.Atoi(groups[2])
+			}
+			if groups[3][0] == 'd' {
+				d.days += sign * n
+			} else if groups[3][0] == 'w' {
+				d.days += sign * n * 7
+			} else if groups[3][0] == 'M' {
+				d.months += sign * n
+			} else if groups[3][0] == 'y' {
+				d.years += sign * n
+			}
+
+			s = fmt.Sprintf("%s%s", groups[1], groups[4])
 		}
 	}
 
-	return time.ParseDuration(d)
+	return s, d
+}
+
+func parseDuration(d string) (time.Duration, dayShift, error) {
+	s, dayShift := stripDays(d)
+
+	if len(s) <= 1 && (dayShift.days != 0 || dayShift.months != 0 || dayShift.years != 0) {
+		return time.Duration(0), dayShift, nil
+	}
+	dd, err := time.ParseDuration(s)
+	return dd, dayShift, err
 }

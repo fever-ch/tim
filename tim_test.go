@@ -20,11 +20,27 @@ func TestTimWithTZNoShift(t *testing.T) {
 	assert.Equal(t, int64(681490580000), ts.UnixMilli())
 }
 
-func TestTimNoTZWithShift(t *testing.T) {
+func TestTimNoTZWith2hShift(t *testing.T) {
+	ts1, err := parseTim("1991-06-06T16:56:20+00:00-2h")
+	ts2, err := parseTim("1991-06-06T16:56:20+02:00")
+
+	assert.Nil(t, err)
+	assert.Equal(t, ts1.UnixMilli(), ts2.UnixMilli())
+}
+
+func TestTimNoTZWith2dShift(t *testing.T) {
 	ts, err := parseTim("1991-06-06T16:56:20+02:00+2d")
 
 	assert.Nil(t, err)
 	assert.Equal(t, int64(676392980000), ts.UnixMilli())
+}
+
+func TestTimNoTZWithYearShift(t *testing.T) {
+	ts1, err := parseTim("1991-06-06T16:56:20+02:00+1y")
+	ts2, err := parseTim("1992-06-06T16:56:20+02:00")
+
+	assert.Nil(t, err)
+	assert.Equal(t, ts2.UnixMilli(), ts1.UnixMilli())
 }
 
 func TestTimWithTZWithShift(t *testing.T) {
