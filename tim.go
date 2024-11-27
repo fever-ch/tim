@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func parseTim(t string) (time.Time, error) {
+func ParseTim(t string) (time.Time, error) {
 	rx := regexp.MustCompile(`^(.+)([+\-][\sa-z0-9]+)$`)
 	groups := rx.FindStringSubmatch(t)
 	if groups != nil {
